@@ -18,11 +18,11 @@ test('Provides |Symbol.iterator| as a generator', t => {
 
 test('Stops iterating when its source is consumed', t => {
   t.plan(8);
-  
-  const {identity, readyp} = t.context;  
-  const seq = new LazySequence([0,1,2], identity, readyp);
+
+  const {identity, readyp} = t.context;
+  const seq = new LazySequence([0, 1, 2], identity, readyp);
   const iterator = seq[Symbol.iterator]();
-  
+
   for (let i = 0; i < 3; i++) {
     const iteration = iterator.next();
     t.is(iteration.done, false);

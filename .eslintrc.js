@@ -1,7 +1,8 @@
 module.exports = {
   extends: 'eslint:recommended',
   parserOptions: {
-    ecmaVersion: 2017
+    ecmaVersion: 2017,
+    sourceType: 'module'
   },
   env: {
     es6: true,
@@ -17,7 +18,6 @@ module.exports = {
     'computed-property-spacing': [2, 'never'],
     'consistent-this': [2, 'self'],
     'func-call-spacing': [2, 'never'],
-    'func-style': [1, 'declaration'],
     'id-blacklist': [2, 'data', 'info', 'obj'],
     'id-length': [1, {
       min: 1, max: 20,
@@ -47,7 +47,7 @@ module.exports = {
     'no-lonely-if': 2,
     'no-mixed-spaces-and-tabs': 2, // Recommended
     'no-multiple-empty-lines': [2, {max: 2}],
-    'no-restricted-syntax': [2, 'ClassBody', 'ClassDeclaration', 'ClassExpression'],
+    'no-restricted-syntax': [2, ],
     'no-trailing-spaces': 2,
     'no-unneeded-ternary': [2, { defaultAssignment: false }],
     'no-unused-vars': 1,

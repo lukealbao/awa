@@ -1,3 +1,5 @@
+/* eslint-disable max-depth */
+
 'use strict';
 
 const debug = require('util').debuglog('lzq');
@@ -27,7 +29,6 @@ LazySequence.prototype.initialAccumulator = function () {
 
 LazySequence.prototype[Symbol.iterator] = function* () {
   const self = this;
-  let i = 0;
   self.debug('creating iterator');
 
   // Outer loop generates values until source iterator is done.
@@ -54,7 +55,8 @@ LazySequence.prototype[Symbol.iterator] = function* () {
         // in order to get all the transducers there.
         // Cf. event-stream TODO#1
         if (self.iterable instanceof LazySequence) {
-          self.debug(`  Giving back to yielding source <${this.iterable.id}>`, nextIteration);
+          self.debug(`  Giving back to yielding source <${this.iterable.id}>`,
+                     nextIteration);
           nextIteration = self.source.next(nextIteration);
         }
 
