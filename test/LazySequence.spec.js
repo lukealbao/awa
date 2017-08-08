@@ -8,6 +8,16 @@ test.beforeEach(t => {
   t.context.readyp = (acc) => true;
 });
 
+test('Sets a monotonically increasing integer |id| property', t => {
+  const {identity, readyp} = t.context;
+  const seq1 = new LazySequence([], identity, readyp);
+  const seq2 = new LazySequence([], identity, readyp);
+  const seq3 = new LazySequence([], identity, readyp);
+
+  t.is(seq2.id - seq1.id, 1);
+  t.is(seq3.id - seq2.id, 1);
+});
+
 test('Provides |Symbol.iterator| as a generator', t => {
   const {identity, readyp} = t.context;
   const seq = new LazySequence([], identity, readyp);
