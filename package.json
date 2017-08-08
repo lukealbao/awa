@@ -1,0 +1,29 @@
+{
+  "name": "staq",
+  "version": "0.1.0",
+  "description": "Asynchronous, lazy sequences and their operations",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava -v test/*.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/lukealbao/staq.git"
+  },
+  "keywords": [
+    "lazy",
+    "sequence",
+    "transducers",
+    "reactive"
+  ],
+  "author": {
+    "name": "Luke Albao",
+    "email": "lukealbao+npm@gmail.com",
+    "url": "https://github.com/lukealbao"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^0.21.0",
+    "ava-spec": "^1.1.0"
+  }
+}
