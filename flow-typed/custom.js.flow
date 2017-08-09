@@ -1,0 +1,26 @@
+// @flow
+
+// Common & Helpers
+declare type func = () => mixed;
+declare type factory<T> = (...args: mixed[]) => T;
+declare type predicate = (...args: mixed[]) => boolean;
+
+// Transducers
+//declare type readyp<T> = boolean;
+declare type reducingFn<A,B> = (acc: ?A, val: ?B) =>  A;
+declare function transducingFn (fn: func): reducingFn<*, *>;
+
+declare type transducer<A, B> =
+  // We would put as a type for fn (func) above, but that makes some
+  // inferences in places we don't want them. For example, in spec
+  // files, which we want to have with no annotations, we have some
+  // tiny arrow functions, and as of now Flow cannot infer (x -> x * 2)
+  // applied to an array of numbers is safe.
+  //
+  // So for now we use the unsafe `function` type.
+  & (fn: function, source?: Iterable<A>) => sequenceWrapper<A, B>
+  & (fn: function, source: Iterable<A>) => LazySequence<A, B>;
+
+// Sequences
+declare type sequenceWrapper<A, B> = (LazySequence<mixed, A> | Iterable<A>) => LazySequence<A, B>;
+

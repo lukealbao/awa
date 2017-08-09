@@ -1,0 +1,3 @@
+// @flow
+declare module.exports:
+  (output: Iterable<*>, source: Iterable<*>) =>  Promise<Iterable<*>>

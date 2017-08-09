@@ -1,3 +1,5 @@
+// @flow
+
 'use strict';
 
 const test = require('ava');
@@ -68,6 +70,7 @@ test('Throws TypeError if output is not supported', async (t) => {
 
   const source = [1, 2, 3];
   try {
+    // $ExpectError
     const output = await into({}, source);
   } catch (e) {
     t.true(e instanceof TypeError);

@@ -1,0 +1,13 @@
+// @flow
+
+declare class LazySequence<TypeIn, TypeOut>  {
+  constructor (source: Iterable<TypeIn>,
+    transduce: transducingFn,
+    readyp: predicate,
+    initialAccumulator: factory<*>): LazySequence<TypeOut>;
+
+  // $ExpectError
+  [Symbol.iterator]: () => Iterator<TypeOut>
+}
+
+declare module.exports: LazySequence<*, *>;
