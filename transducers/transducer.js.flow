@@ -1,0 +1,11 @@
+// @flow
+//
+// See flow-typed/custom.js.flow for common declarations.
+
+declare module.exports:
+  & (transduce: transducingFn) => transducer<*, *>
+  & (transduce: transducingFn,
+     isReady: predicate) => transducer<*, *>
+  & (transduce: transducingFn,
+     isReady: predicate,
+    initialAcc: factory<*>) => transducer<*, *>;
