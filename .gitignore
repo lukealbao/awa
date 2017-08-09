@@ -7,3 +7,4 @@ coverage/
 org/
 *.tap
 archive/
+.nyc_output/

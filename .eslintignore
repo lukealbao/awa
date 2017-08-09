@@ -11,3 +11,5 @@ node_modules/
 public/
 views/
 dist/
+archive/
+.nyc_output/

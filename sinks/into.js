@@ -16,8 +16,7 @@
 // result in Map{ 1 => 'a', 2 => 'b'}. Otherwise, each value will be treated as
 // a key pointing to an undefied value.
 
-async function into (arr, seq) {
-  const output = arr || [];
+async function into (output, seq) {
   const iterator = seq[Symbol.iterator]();
 
   for (let item of iterator) {

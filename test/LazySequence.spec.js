@@ -43,3 +43,14 @@ test('Stops iterating when its source is consumed', t => {
   t.is(iteration.done, true);
   t.is(iteration.value, undefined);
 });
+
+test('inspect() displays id and nested source(s)', t => {
+  const {identity, readyp} = t.context;
+  const seq1 = new LazySequence([0, 1, 2], identity, readyp);
+  const seq2 = new LazySequence(seq1, identity, readyp);
+  const seq3 = new LazySequence(seq2, identity, readyp);
+
+  const output = seq3.inspect();
+  const matches = output.match(/LazySequence\(\d+\)/g);
+  t.is(matches && matches.length, 3);
+});

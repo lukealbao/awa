@@ -2,7 +2,8 @@
 
 'use strict';
 
-const debug = require('util').debuglog('lzq');
+const util = require('util');
+const debug = util.debuglog('lzq');
 
 let id = 1;
 
@@ -88,7 +89,7 @@ class LazySequence {
   }
 
   inspect () {
-    return `[LazySequence ${this.id}] source: ${this.iterable}`;
+    return `[LazySequence(${this.id}) source: ${util.inspect(this.iterable)}]`;
   }
 }
 
