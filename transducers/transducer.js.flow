@@ -3,9 +3,9 @@
 // See flow-typed/custom.js.flow for common declarations.
 
 declare module.exports:
-  & (transduce: transducingFn) => transducer<*, *>
-  & (transduce: transducingFn,
-     isReady: predicate) => transducer<*, *>
-  & (transduce: transducingFn,
+  & <A, B>(transduce: transducingFn<A, B>) => transducert<A, B>
+  & <A, B>(transduce: transducingFn<A, B>,
+     isReady: predicate) => transducert<A, B>
+  & <A, B>(transduce: transducingFn<A, B>,
      isReady: predicate,
-    initialAcc: factory<*>) => transducer<*, *>;
+    initialAcc: factory<*>) => transducert<A, B>;

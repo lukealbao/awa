@@ -2,7 +2,7 @@
 
 declare class LazySequence<TypeIn, TypeOut>  {
   constructor (source: Iterable<TypeIn>,
-    transduce: transducingFn,
+    transduce: transducingFn<TypeIn, TypeOut>,
     readyp: predicate,
     initialAccumulator: factory<*>): LazySequence<TypeOut>;
 
@@ -10,4 +10,4 @@ declare class LazySequence<TypeIn, TypeOut>  {
   [Symbol.iterator]: () => Iterator<TypeOut>
 }
 
-declare module.exports: LazySequence<*, *>;
+declare module.exports: LazySequence<*, *>

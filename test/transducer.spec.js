@@ -25,9 +25,3 @@ test('(fn, sequence) -> sequence', t => {
 
   t.true(tform instanceof LazySequence);
 });
-
-test('flow generics', t => {
-  const source: string[] = ['a', 'b'];//[1,2,3];
-  const tform: transducer = t.context.id(x => x);
-  const sequence: LazySequence<number, number> = tform(source);
-});

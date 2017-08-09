@@ -3,14 +3,13 @@
 // Common & Helpers
 declare type func = () => mixed;
 declare type factory<T> = (...args: mixed[]) => T;
-declare type predicate = (...args: mixed[]) => boolean;
 
 // Transducers
 //declare type readyp<T> = boolean;
-declare type reducingFn<A,B> = (acc: ?A, val: ?B) =>  A;
-declare function transducingFn (fn: func): reducingFn<*, *>;
+declare type reducingFn = <A, B>(acc: B, val: A) =>  B;
+declare function transducingFn<A,B> (fn: func): reducingFn<A, B>;
 
-declare type transducer<A, B> =
+declare type transducert<A, B> =
   // We would put as a type for fn (func) above, but that makes some
   // inferences in places we don't want them. For example, in spec
   // files, which we want to have with no annotations, we have some
@@ -18,9 +17,10 @@ declare type transducer<A, B> =
   // applied to an array of numbers is safe.
   //
   // So for now we use the unsafe `function` type.
-  & (fn: function, source?: Iterable<A>) => sequenceWrapper<A, B>
-  & (fn: function, source: Iterable<A>) => LazySequence<A, B>;
+  & (fn: function) => sequenceWrapper<A, B>
+  & (fn: function, source?: Iterable<A>) => sequenceWrapper<A, B> | LazySequence<A, B>;
+  
 
 // Sequences
-declare type sequenceWrapper<A, B> = (LazySequence<mixed, A> | Iterable<A>) => LazySequence<A, B>;
+declare type sequenceWrapper<A, B> = <A,B>(LazySequence<mixed, A> | Iterable<A>) => LazySequence<A, B>;
 
