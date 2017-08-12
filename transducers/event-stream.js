@@ -1,16 +1,21 @@
 'use strict';
 
 const SlidingBuffer = require('../sources/SlidingBuffer');
-const {debuglog, inspect} = require('util');
+const {isPrimitive, debuglog, inspect} = require('util');
 const debug = debuglog('awa/eventstream');
 const {SENTINEL} = require('../index.js');
+const deepcopy = require('deep-copy');
+const clone = x => {
+  if (isPrimitive(x)) return x;
+  return deepcopy(x);
+};
 
 function eventStream (emitter, itemEvent, endEvent) {
   const buffer = new SlidingBuffer(10);
   var endListener;
 
   function enqueue (value) {
-    const ret = buffer.push(value);
+    const ret = buffer.push(clone(value));
     debug(`#${itemEvent}: buffering(${value})`);
     return ret;
   }

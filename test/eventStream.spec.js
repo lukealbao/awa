@@ -85,8 +85,8 @@ test('Emitting a single event before ending is ok', async (t) => {
   t.deepEqual(output, [1]);
 });
 
-test('Two streams from same emitter may mutate same objects!', async (t) => {
-  t.plan(1);
+test('Two streams from same emitter receive separate objects!', async (t) => {
+  t.plan(2);
 
   const emitter = new EventEmitter();
   const stream1 = eventStream(emitter, 'data', 'end');
@@ -98,5 +98,6 @@ test('Two streams from same emitter may mutate same objects!', async (t) => {
 
   const output1 = await into([], stream1);
   const output2 = await into([], stream2);
-  t.is(output1[0], output2[0]);
+  t.not(output1[0], output2[0]);
+  t.deepEqual(output1[0], output2[0]);
 });
