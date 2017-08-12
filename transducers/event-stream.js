@@ -15,23 +15,27 @@ function eventStream (emitter, itemEvent, endEvent) {
     return ret;
   }
 
+  function close (buffer, endListener) {
+    debug(`#${endEvent}: closing stream`);
+    emitter.removeListener(itemEvent, enqueue);
+    if (typeof endListener === 'function') {
+      endListener();
+    }
+  }
+
   emitter.on(itemEvent, enqueue);
   let listening = true;
 
   if (typeof endEvent === 'string') {
     emitter.once(endEvent, () => {
       if (buffer.isEmpty()) {
-        debug(`#${endEvent}: closing stream`);
-        emitter.removeListener(itemEvent, enqueue);
+        close(buffer, endListener);
         listening = false;
-        endListener();
       } else {
         debug(`#${endEvent}: waiting on full buffer`);
         buffer.once('empty', () => {
-          debug(`#${endEvent}: buffer flushed, closing stream`);
-          emitter.removeListener(itemEvent, enqueue);
+          close(buffer, endListener);
           listening = false;
-          endListener();
         });
       }
     });
