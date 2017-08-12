@@ -1,5 +1,8 @@
 [ignore]
 .*/node_modules/*
+.*/.nyc_output/*
+.*/archive/*
+.*/coverage/*
 
 [include]
 

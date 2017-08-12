@@ -2,11 +2,7 @@
 'use strict';
 
 import test from 'ava';
-import map from '../transducers/map';
-import filter from '../transducers/filter';
-import into from '../sinks/into';
-import compose from '../lib/compose';
-import sequence from '../transducers/sequence';
+import {map, filter, into, compose, sequence, eventStream} from '../';
 
 test('Asynchronous map/filter transducer stack', async (t) => {
   const source = sequence([1, 2, Promise.resolve(3), Promise.resolve(4),
@@ -24,4 +20,3 @@ test('Asynchronous map/filter transducer stack', async (t) => {
   // isUnder5(1..9) -> double(1,2,3,4) -> inc(2,4,6,8) -> (3,5,7,9)
   t.deepEqual(output, [3, 5, 7, 9]);
 });
-

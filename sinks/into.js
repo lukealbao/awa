@@ -16,32 +16,37 @@
 // result in Map{ 1 => 'a', 2 => 'b'}. Otherwise, each value will be treated as
 // a key pointing to an undefied value.
 
+const {debuglog, inspect} = require('util');
+const debug = debuglog('awa/into');
+
 async function into (output, seq) {
   const iterator = seq[Symbol.iterator]();
 
-  for (let item of iterator) {
-    while (item && typeof item.then === 'function') {
-      item = await item;
-      // Calling next() directly means we need to take the value.
-      item = iterator.next({value: item, done: false});
+  let done = false;
 
-      // TODO: Document - we were including undefined values (i.e., the results
-      // of a done source), for example, an underlying filterer whose last
-      // value failed the filter test. We'd be waiting for it in the previous
-      // line since we resolved it for them, but they never yielded it back;
-      // rather, they returned a done/undefined iteration.
-      if (item.done) return output;
-      item = item && item.value;
+  while (!done) {
+    let next = iterator.next(); // {done: boolean, value: T | Promise<T>}
 
-      // Example: A source yielded a promise, which we resolved, and passed
-      // back. Then, a filtering transducer on the source skipped that value.
-      // Thus its next value is not the transduced value we just resolved, but
-      // rather a new promise that we need to resolve.
-      //
-      // We need a pattern that will resolve as long as we need to.
+    if (next.done) {
+      done = true;
+      break;
     }
 
-    addTo(output, item);
+    while (next.value && typeof next.value.then === 'function') {
+      // item :: Promise<T>
+      next.value = await next.value; // T
+      debug(`await resolved ${inspect(next.value)}`);
+
+      next = iterator.next(next.value); // {done: boolean, value: T}
+
+      if (next.done) {
+        done = true;
+        return output;
+      }
+    }
+
+    addTo(output, next.value);
+    debug(`pushed value ${inspect(next.value)}`);
   }
 
   return output;

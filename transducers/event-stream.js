@@ -1,63 +1,100 @@
 'use strict';
 
 const SlidingBuffer = require('../sources/SlidingBuffer');
+const {debuglog, inspect} = require('util');
+const debug = debuglog('awa/eventstream');
+const {SENTINEL} = require('../index.js');
 
-function* eventStream (emitter, itemEvent, endEvent) {
+function eventStream (emitter, itemEvent, endEvent) {
+  const buffer = new SlidingBuffer(10);
+  var endListener;
+
+  function enqueue (value) {
+    const ret = buffer.push(value);
+    debug(`#${itemEvent}: buffering(${value})`);
+    return ret;
+  }
+
+  emitter.on(itemEvent, enqueue);
   let listening = true;
-  const buffer = new SlidingBuffer(); // length=1
 
-  function future () {
-    return new Promise(resolve => {
-      const maybeValue = buffer.shift();
-      if (maybeValue !== undefined) {
-        resolve(maybeValue);
+  if (typeof endEvent === 'string') {
+    emitter.once(endEvent, () => {
+      if (buffer.isEmpty()) {
+        debug(`#${endEvent}: closing stream`);
+        emitter.removeListener(itemEvent, enqueue);
+        listening = false;
+        endListener();
       } else {
-        buffer.once('push', () => {
-          resolve(buffer.shift());
+        debug(`#${endEvent}: waiting on full buffer`);
+        buffer.once('empty', () => {
+          debug(`#${endEvent}: buffer flushed, closing stream`);
+          emitter.removeListener(itemEvent, enqueue);
+          listening = false;
+          endListener();
         });
       }
     });
   }
 
-  function enqueue (value) {
-    return buffer.push(value);
-  }
+  // Each future represents a client's call to next(). It is essentially
+  // a state machine which operates on 3 different inputs:
+  // - source#end: When the source emitter emits an <endEvent>, then the
+  //   machine will resolve the awa.SENTINEL Symbol. When this symbol is
+  //   yielded back, the whole generator will stop.
+  // - buffer=ready: If an event has already been placed in the buffer,
+  //   the machine simply resolves it immediately.
+  // - buffer#push: If no event is available, the machine enters a waiting
+  //   state. Once a new event value has been pushed into the buffer, the
+  //   machine will resolve it.
+  //
+  // The trickiest part is the way source#end is handled. The interface of
+  // an event stream requires that it respond with iterations ({done, value})
+  // to calls to its iterator.next() method. However, the listener for an
+  // end event is not subject to this control flow (or even lexical scope).
+  // Because the futures and their respective resolvers are run in sequence,
+  // we can safely register each resolver as a listener for the end event,
+  // removing it once a data event occurs. At any given point, `endListener`
+  // closes over the latest resolver, and so if and when the end event fires,
+  // the sentinel is passed to the correct resolver.
+  function future () {
+    return new Promise(resolve => {
+      endListener = function () {
+        resolve(SENTINEL);
+      };
 
-  emitter.on(itemEvent, enqueue);
-
-  if (typeof endEvent === 'string') {
-    emitter.once(endEvent, () => {
-      emitter.removeListener(itemEvent, enqueue);
-      listening = false;
+      if (buffer.isEmpty()) {
+        buffer.once('push', () => {
+          const value = buffer.shift();
+          endListener = undefined;
+          resolve(value);
+        });
+      } else {
+        const value = buffer.shift();
+        endListener = (undefined);
+        resolve(value);
+      }
     });
   }
 
-  while (listening) {
-    const nextVal = yield future();
+  // Generators only run on next tick, so we have to export a plain function
+  // in order to get the listeners attached during this tick.
+  function* geventStream () {
+    while (listening) {
+      const nextVal = yield future();
 
-    // TODO#1: Why did we need this conditional? With an event stream emitting
-    // numbers, transformed into a LazySequence whose transducer maps events
-    // to Math.pow(2, event), we got interleaved [1,NaN,2,NaN,4,...].
-    //
-    // Why? Probably /something/ was passing down a call to next() on this
-    // stream without giving it an argument. But where?
-    //
-    // See PROBLEM in lazy-sequence. The client to this iterator is a lazy
-    // sequence. We yield it a promise, but they never yield it back, because
-    // there it is only yielded back if the source (i.e., this) is a
-    // LazySequence.
-    //
-    // FIXME: It <might> be the case that this conditional, and the instanceof
-    // conditional in the LazySequence could be removed. Question is, will we
-    // skip values in cases where the source is NOT some yielding iterator?
-    //
-    // No, I don't think so, since that only happens if the produced value is
-    // a Promise, in which case you already got (usually!) some yielding
-    // sequence.
-    if (nextVal && nextVal.value) {
-      yield nextVal.value;
+      if (nextVal === SENTINEL) {
+        break;
+      }
+
+      debug(`yielding ${inspect(nextVal)}`);
+      yield nextVal;
     }
+
+    return (undefined);
   }
+
+  return geventStream();
 }
 
 module.exports = eventStream;

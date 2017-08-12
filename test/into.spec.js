@@ -56,7 +56,7 @@ test('Treats source sequence of tuples as key/val pairs when output is a Map',
        t.not(output, source);
      });
 
-test('Consumes a LazySequence with mixed sync/async values', async (t) => {
+test('Consumes a AwaIterable with mixed sync/async values', async (t) => {
   t.plan(1);
 
   const source = sequence([1, 2, Promise.resolve(3), Promise.resolve(4)]);

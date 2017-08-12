@@ -20,7 +20,7 @@
 // @initialAcc :: () -> any
 //     When a transducer accumulates entries, it will need an initial value.
 
-const LazySequence = require('../sources/LazySequence');
+const AwaIterable = require('../sources/AwaIterable');
 
 // A value from a mapping transducer is always ready, there is no
 // reduction needed.
@@ -38,13 +38,13 @@ function transducer (transduce, readyp = alwaysReady, initialAcc = emptyAcc) {
   return function (fn, sequence) {
     if (sequence === undefined) {
       return function (sequence) {
-        return new LazySequence(sequence,
+        return new AwaIterable(sequence,
                                 transduce(fn),
                                 readyp,
                                 initialAcc);
       };
     } else {
-      return new LazySequence(sequence,
+      return new AwaIterable(sequence,
                               transduce(fn),
                               readyp,
                               initialAcc);

@@ -3,11 +3,11 @@
 'use strict';
 
 const util = require('util');
-const debug = util.debuglog('lzq');
+const debug = util.debuglog('awa/iterable');
 
 let id = 1;
 
-class LazySequence {
+class AwaIterable {
   constructor (source, transduce, readyp, initialAccumulator) {
     this.source = source[Symbol.iterator]();
     this.iterable = source;
@@ -22,7 +22,7 @@ class LazySequence {
   }
 
   debug (...args) {
-    return debug(`<LazySequence ${this.id}>`, ...args);
+    return debug(`<AwaIterable ${this.id}>`, ...args);
   }
 
   initialAccumulator () {
@@ -31,7 +31,6 @@ class LazySequence {
 
   *[Symbol.iterator] () {
     const self = this;
-    self.debug('creating iterator');
 
     // Outer loop generates values until source iterator is done.
     // TODO: Where does that happen that we identify consumed state? Or do we
@@ -42,39 +41,35 @@ class LazySequence {
 
       // Inner loop accumulates values off of the source iterator.
       while (!ready) {
-        let nextIteration = self.source.next();
-        let next = nextIteration.value;
-        self.debug(`Took from source <${this.iterable.id}>`, next);
+        let next = self.source.next();
+        self.debug(`Took from source <${this.iterable.id}>`, next.value);
 
-        while (next && typeof next.then === 'function') {
+        // This whole block is just a monad to resolve a promise.
+        while (next.value && typeof next.value.then === 'function') {
           // Let caller resolve function
           self.debug('  (Yielding for client resolution)');
-          nextIteration = yield next;
+          next.value = yield next.value; // T -> T
 
-          self.debug('Client resolved', nextIteration);
+          self.debug('Client resolved', next.value);
 
           // PROBLEM: If source is a LazyFunction, we need to yield back to it
           // in order to get all the transducers there.
           // Cf. event-stream TODO#1
-          if (self.iterable instanceof LazySequence) {
+          if (self.iterable instanceof AwaIterable) {
             self.debug(`  Giving back to yielding source <${this.iterable.id}>`,
-                       nextIteration);
-            nextIteration = self.source.next(nextIteration);
+                       next.value);
+            next = self.source.next(next.value);
           }
-
-          next = nextIteration.value;
-        } // else {
-        //   self.debug('  (Synchronous)');
-        // }
+        }
 
         // TODO: is this enough to ensure Hickey's rule that "... if a
         // transducing process or a transducer gets a reduced
         // value, it must never call a step function with input again."
-        if (nextIteration.done) return;
+        if (next.done) return;
 
         // Transduce
-        self.debug(`transduce(${acc}, ${nextIteration.value})`);
-        acc = self.transduce(acc, nextIteration.value);
+        self.debug(`transduce(${acc}, ${next.value})`);
+        acc = self.transduce(acc, next.value); // TODO: simplify this reference tangle
         self.debug(`  -> acc is now`, acc);
 
         // isReady?
@@ -89,8 +84,8 @@ class LazySequence {
   }
 
   inspect () {
-    return `[LazySequence(${this.id}) source: ${util.inspect(this.iterable)}]`;
+    return `[AwaIterable(${this.id}) source: ${util.inspect(this.iterable)}]`;
   }
 }
 
-module.exports = LazySequence;
+module.exports = AwaIterable;
