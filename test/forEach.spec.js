@@ -3,8 +3,7 @@
 'use strict';
 
 const test = require('ava');
-const forEach = require('../sinks/forEach');
-const sequence = require('../transducers/sequence');
+import {forEach, sequence} from '../';
 
 test('Returns a Promise resolving the number of entries processed', t => {
   t.plan(1);

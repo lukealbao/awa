@@ -1,8 +1,7 @@
 'use strict';
 
 import {test} from 'ava';
-import sequence from '../transducers/sequence';
-import into from '../sinks/into';
+import {sequence, into} from '../';
 
 test('Accepts an iterable and returns a transducer', async (t) => {
   const arr = [1, 2, 3, 4];

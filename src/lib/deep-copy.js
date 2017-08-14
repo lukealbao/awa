@@ -5,7 +5,7 @@ var util = require('util');
 var copy = util._extend;
 var debug = console.log;//util.debuglog('dc');
 
-module.exports = function deepCopy (source, cache=new Map()) {
+module.exports = function deepCopy (source, cache = new Map()) {
   const output = {};
   cache.set(source, output);
 

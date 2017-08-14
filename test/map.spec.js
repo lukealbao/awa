@@ -1,9 +1,7 @@
 'use strict';
 
 import test from 'ava';
-import map from '../transducers/map';
-import into from '../sinks/into';
-import compose from '../lib/compose';
+import {map, into, compose} from '../';
 
 test('(any -> any) -> (sequence) -> sequence', async (t) => {
   const double = map(x => x * 2);

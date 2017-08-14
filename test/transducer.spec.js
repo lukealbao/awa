@@ -2,8 +2,7 @@
 
 'use strict';
 
-import transducer from '../transducers/transducer';
-import AwaIterable from '../sources/AwaIterable';
+import {transducer, Iterable} from '../';
 import test from 'ava';
 
 test.beforeEach(t => {
@@ -16,12 +15,12 @@ test('(fn) -> (sequence) -> sequence', t => {
   t.is(typeof tform, 'function');
 
   const sequence = tform([1, 2, 3]);
-  t.true(sequence instanceof AwaIterable);
+  t.true(sequence instanceof Iterable);
 });
 
 test('(fn, sequence) -> sequence', t => {
   const source = [];
   const tform = t.context.id(x => x, source);
 
-  t.true(tform instanceof AwaIterable);
+  t.true(tform instanceof Iterable);
 });

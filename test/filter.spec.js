@@ -3,9 +3,7 @@
 'use strict';
 
 import test from 'ava';
-import filter from '../transducers/filter';
-import into from '../sinks/into';
-import compose from '../lib/compose';
+import {filter, into, compose} from '../';
 
 test('(any -> boolean) -> (sequence) -> sequence', async (t) => {
   const isEven = filter(x => x % 2 === 0);

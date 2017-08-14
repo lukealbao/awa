@@ -2,13 +2,14 @@
   "name": "Awa",
   "version": "0.1.0",
   "description": "Asynchronous, lazy sequences and their operations",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "babel src/ -o dist/",
+    "build": "rm -rf dist/* && cp -r src/* dist/",
     "cover": "nyc --check-coverage --statements 100 npm test",
     "cover:report": "nyc --reporter=lcov npm test && open coverage/lcov-report/index.html",
     "flow": "flow",
-    "test": "ava -v test/*.spec.js"
+    "test": "ava -v test/*.spec.js",
+    "pretest": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -29,11 +30,16 @@
   "license": "MIT",
   "devDependencies": {
     "ava": "^0.21.0",
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015-node4": "^2.1.1",
+    "babel-preset-flow": "^6.23.0",
     "flow-bin": "^0.52.0",
     "flow-coverage-report": "^0.3.0",
     "nyc": "^11.1.0"
   },
   "dependencies": {
+    "@ava/babel-preset-stage-4": "^1.1.0",
     "deep-copy": "^1.2.0"
   }
 }

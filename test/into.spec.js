@@ -3,8 +3,7 @@
 'use strict';
 
 const test = require('ava');
-const into = require('../sinks/into');
-const sequence = require('../transducers/sequence');
+import {into, sequence} from '../';
 
 test('Returns a Promise resolving its output iterable', t => {
   t.plan(1);

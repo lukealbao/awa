@@ -3,7 +3,7 @@
 'use strict';
 
 import test from 'ava';
-import compose from '../lib/compose';
+import {compose} from '../';
 
 test('Composes any number of 1-arity functions', t => {
   const inc = x => x + 1;
