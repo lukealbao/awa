@@ -103,7 +103,12 @@ function eventStream (emitter, itemEvent, endEvent) {
     return (undefined);
   }
 
-  return geventStream();
+  // But we also need to announce to clients that this can receive values
+  // in their calls to next:
+  return {
+    [Symbol.iterator]: geventStream,
+    IS_AWAITERABLE: true
+  };
 }
 
 module.exports = eventStream;

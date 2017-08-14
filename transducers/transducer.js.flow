@@ -2,10 +2,27 @@
 //
 // See flow-typed/custom.js.flow for common declarations.
 
+import AwaIterable from '../sources/AwaIterable'
+type FN<X, Y> = (domain: X) => Y;
+
+declare type transducible<In, Out> =
+  & (fn: FN<In, Out>, end: void) => AwaIterable<In, Out>
+  & (
+      fn: FN<In, Out>,
+      seq: (AwaIterable<In,Out>|Iterable<In>)
+    ) => AwaIterable<In, Out>;
+
 declare module.exports:
-  & <A, B>(transduce: transducingFn<A, B>) => transducert<A, B>
-  & <A, B>(transduce: transducingFn<A, B>,
-     isReady: predicate) => transducert<A, B>
-  & <A, B>(transduce: transducingFn<A, B>,
-     isReady: predicate,
-    initialAcc: factory<*>) => transducert<A, B>;
+  & <In, Out>(
+      transduce: () => mixed,
+      readyp?: () => boolean,
+      initialAcc?: () => mixed,
+      end: void
+    ) => transducible<In, Out>
+  & <In, Out>(
+      transduce: () => Out,
+      readyp?: () => boolean,
+      initialAcc?: () => mixed,
+      sequence: AwaIterable<In> | Iterable<In>
+    ) => AwaIterable<Out>;
+

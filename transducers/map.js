@@ -1,5 +1,3 @@
-// @flow
-
 'use strict';
 
 const transducer = require('./transducer');

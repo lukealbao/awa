@@ -9,6 +9,7 @@ let id = 1;
 
 class AwaIterable {
   constructor (source, transduce, readyp, initialAccumulator) {
+    this.IS_AWAITERABLE = true;
     this.source = source[Symbol.iterator]();
     this.iterable = source;
     this.transduce = transduce;
@@ -55,7 +56,7 @@ class AwaIterable {
           // PROBLEM: If source is a LazyFunction, we need to yield back to it
           // in order to get all the transducers there.
           // Cf. event-stream TODO#1
-          if (self.iterable instanceof AwaIterable) {
+          if (self.iterable.IS_AWAITERABLE) {// || self.iterable instanceof AwaIterable) {
             self.debug(`  Giving back to yielding source <${this.iterable.id}>`,
                        next.value);
             next = self.source.next(next.value);
@@ -68,7 +69,7 @@ class AwaIterable {
         if (next.done) return;
 
         // Transduce
-        self.debug(`transduce(${acc}, ${next.value})`);
+        //self.debug(`transduce(${acc}, ${next.value})`);
         acc = self.transduce(acc, next.value); // TODO: simplify this reference tangle
         self.debug(`  -> acc is now`, acc);
 
