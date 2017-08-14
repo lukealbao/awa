@@ -3,5 +3,5 @@
 // TODO: Should this type include Promise<T> values? Or is that
 // more proper to the iterator?
 declare type AwaIteration<T> =
-  | {done: false, value: AwaValue<T>}
-  | {done: true, value: AwaValue<void>};
+  | {done: false, value: AwaValue<T | void>}
+  | {done: true, value: void};

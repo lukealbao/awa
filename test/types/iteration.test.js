@@ -1,3 +1,4 @@
+// -*- jsx -*-
 // @flow
 
 // Ordinary production
@@ -7,12 +8,16 @@ let a: AwaIteration<string> = {done: false, value: 'foo'};
 let b: AwaIteration<string> = {done: true, value: 'foo'};
 let c: AwaIteration<string> = {done: true, value: undefined};
 
-// $ExpectError: Undone must have value...
-let d: AwaIteration<string> = {done: false, value: undefined};
-// ... unless typed as such
-let e: AwaIteration<string | void> = {done: false, value: undefined};
+// // $NOPE: ExpectError: Undone must have value...
+// let d: AwaIteration<string> = {done: false, value: undefined};
+// // ... unless typed as such
+// let e: AwaIteration<string | void> = {done: false, value: undefined};
 
-// $ExpectError: Iterations are typed T, but T is not a Promise
+// An iteration with type T may be emitted as a Promise
 let f: AwaIteration<string> = {done: false, value: Promise.resolve('foo')};
+// If you want an async Iteration, you must type it explicitly.
+let g: AwaIteration<Promise<string>> = {done: false, value: Promise.resolve('foo')};
+// But mostly you'll want to have a union
+let h: AwaIteration<string | Promise<string>> = {done: false, value: 'foo'};
 
 

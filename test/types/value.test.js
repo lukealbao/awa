@@ -1,3 +1,4 @@
+// -*- jsx -*-
 // @flow
 
 // Values are emitted by Awa.Iterables. They are typed and may be a sentinel
@@ -10,3 +11,6 @@ const d: AwaValue<Promise<string>> = Promise.resolve('foo');
 
 const e: AwaValue<string> = '@@AWA_SENTINEL';
 const f: AwaValue<string> = Symbol.for('awa.sentinel');
+
+// A value of type T may be emitted as a Promise
+const g: AwaValue<string> = Promise.resolve('foo');
