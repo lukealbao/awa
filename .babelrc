@@ -1,0 +1,6 @@
+{
+  "env": {
+    "flowonly": { "presets": ["flow"] },
+    "dist": { "presets": ["env", "flow"] }
+  }
+}
