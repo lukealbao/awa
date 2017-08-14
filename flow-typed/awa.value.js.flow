@@ -1,0 +1,9 @@
+// @flow
+
+type sentinelES5 = '@@AWA_SENTINEL';
+const sentinelES6 = Symbol.for('awa.sentinel');
+
+// TODO: Once flow gets Symbol support, remove typeof here.
+type SENTINEL = sentinelES5 | typeof sentinelES6;
+
+type AwaValue<T> = T | SENTINEL; 

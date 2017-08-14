@@ -3,3 +3,5 @@
 declare module 'ava' {
   declare module.exports: any;
 }
+
+type FN<X, Y> = (domain: X) => Y;
