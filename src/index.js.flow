@@ -6,34 +6,26 @@ const sentinelES6 = Symbol.for('awa.sentinel');
 type SENTINEL = sentinelES5 | typeof sentinelES6;
 
 type FN<X, Y> = (domain: X) => Y;
+type Maybe<T> = T | void;
 
-type AwaValue<T> = T | SENTINEL; 
+type AwaValue<T> = T | SENTINEL;
 
-type AwaIteration<T> =
-  | {done: false, value: AwaValue<T>}
-  | {done: true, value: AwaValue<void>};
-
-type AwaIterator<T> = {
-  next:
-  & (none: void) => AwaIteration<T | Promise<T>>
-  & (resolved: T) => AwaIteration<T>;
-};
-
-declare class AwaIterable<In, Out> {
+declare class AwaIterable<T> {
   debug(): void;
   inspect(): string;
-  getIterator(): AwaIterator<Out>;
 
-  constructor(
-    source: Iterable<In>,
-    transduce: function,
-    readyp: function,
-    initialAccumulator?: FN<In, void | Out | Iterable<Out> | AwaIterable<any,Out>>
-  ): AwaIterable<In, Out>;
+  @@iterator(): AwaIterator<T>;
 
-  initialAccumulator?: FN<In, Out | Iterable<Out> | AwaIterable<any,Out>>;
-  @@iterator(): AwaIterator<Out>;
-};
+  constructor <In,Out>(
+    source: (Iterable<In> | AwaIterable<In>),
+    transduce: (x: In) => Out, //FN<In, Out>,
+    readyp: FN<mixed, boolean>,
+    // TODO: It may be the case that we begin to add accumulators which
+    // do not have the same type as the annotated output type for the
+    // iterable. It may need to be left as mixed.
+    initialAcc?: FN<mixed, Maybe<Out>>
+  ): AwaIterable<Out>
+}
 
 export default {
   AwaIterable: AwaIterable
@@ -45,6 +37,5 @@ export {
 
 export type {
   SENTINEL,
-  AwaIterator,
   AwaIteration
 }
