@@ -53,13 +53,13 @@ fails('Input type mismatches annotation', () => {
 // --------------------------------------------------
 import type {AwaIteration, AwaIterator} from '../';
 
-fails('Iteration types inherit from Iterable', () => {
-  let customAcc = new AwaIterable([1], noop, noop, noop);  
-  const iterator: AwaIterator<number> = customAcc.getIterator();
-  let bad: AwaIteration<number> = iterator.next();
-  // $ExpectError
-  let bad: AwaIteration<string> = iterator.next();
-});
+// fails('Iteration types inherit from Iterable', () => {
+//   let customAcc = new AwaIterable([1], noop, noop, noop);  
+//   const iterator: AwaIterator<number> = customAcc.getIterator();
+//   let bad: AwaIteration<number> = iterator.next();
+//   // $ShouldExpectError
+//   let bad: AwaIteration<string> = iterator.next();
+// });
 
 // ok('Accesses iteration value', () => {
 //   let iteration = iterator.next();

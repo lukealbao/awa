@@ -11,5 +11,6 @@ flow-typed
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$ExpectError
+suppress_comment=\\(.\\|\n\\)*\\$ExpectError.*
 
 [lints]

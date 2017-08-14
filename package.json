@@ -7,7 +7,7 @@
     "build": "rm -rf dist/* && cp -r src/* dist/",
     "cover": "nyc --check-coverage --statements 100 npm test",
     "cover:report": "nyc --reporter=lcov npm test && open coverage/lcov-report/index.html",
-    "flow": "flow",
+    "flow": "npm run build && flow",
     "test": "ava -v test/*.spec.js",
     "pretest": "npm run build"
   },

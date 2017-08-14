@@ -16,6 +16,7 @@ class AwaIterable {
     this.isReady = readyp;
     this.consumed = false;
     this.id = id++;
+    this['@@iterator'] = this[Symbol.iterator];
 
     if (typeof initialAccumulator === 'function') {
       this.initialAccumulator = initialAccumulator;

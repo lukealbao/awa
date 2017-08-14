@@ -1,0 +1,50 @@
+// @flow
+
+type sentinelES5 = '@@AWA_SENTINEL';
+const sentinelES6 = Symbol.for('awa.sentinel');
+// TODO: Once flow gets Symbol support, remove typeof here.
+type SENTINEL = sentinelES5 | typeof sentinelES6;
+
+type FN<X, Y> = (domain: X) => Y;
+
+type AwaValue<T> = T | SENTINEL; 
+
+type AwaIteration<T> =
+  | {done: false, value: AwaValue<T>}
+  | {done: true, value: AwaValue<void>};
+
+type AwaIterator<T> = {
+  next:
+  & (none: void) => AwaIteration<T | Promise<T>>
+  & (resolved: T) => AwaIteration<T>;
+};
+
+declare class AwaIterable<In, Out> {
+  debug(): void;
+  inspect(): string;
+  getIterator(): AwaIterator<Out>;
+
+  constructor(
+    source: Iterable<In>,
+    transduce: function,
+    readyp: function,
+    initialAccumulator?: FN<In, void | Out | Iterable<Out> | AwaIterable<any,Out>>
+  ): AwaIterable<In, Out>;
+
+  initialAccumulator?: FN<In, Out | Iterable<Out> | AwaIterable<any,Out>>;
+  @@iterator(): AwaIterator<Out>;
+};
+
+export default {
+  AwaIterable: AwaIterable
+};
+
+export {
+  AwaIterable
+}
+
+export type {
+  SENTINEL,
+  AwaIterator,
+  AwaIteration
+}
