@@ -1,0 +1,9 @@
+// @flow
+
+type stepFn<T> =
+  & ((none: void) => AwaIteration<T>)
+  & ((resolved: T) => AwaIteration<T>);
+
+type AwaIterator<T> = {
+  next: stepFn<T>
+};

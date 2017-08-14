@@ -8,11 +8,6 @@ let a: AwaIteration<string> = {done: false, value: 'foo'};
 let b: AwaIteration<string> = {done: true, value: 'foo'};
 let c: AwaIteration<string> = {done: true, value: undefined};
 
-// // $NOPE: ExpectError: Undone must have value...
-// let d: AwaIteration<string> = {done: false, value: undefined};
-// // ... unless typed as such
-// let e: AwaIteration<string | void> = {done: false, value: undefined};
-
 // An iteration with type T may be emitted as a Promise
 let f: AwaIteration<string> = {done: false, value: Promise.resolve('foo')};
 // If you want an async Iteration, you must type it explicitly.

@@ -1,3 +1,4 @@
+// -*- jsx -*-
 // @flow
 
 // No-ops that just make this large test file a little bit easier to read.
@@ -9,7 +10,7 @@ function fails (explanation, context) {
 // --------------------------------------------------
 // ----            @Public: SENTINEL             ----
 // --------------------------------------------------
-import type {SENTINEL} from '../';
+import type {SENTINEL} from '../..';
 
 const es6Sentinel: SENTINEL = Symbol.for('awa.sentinel');
 const es5Sentinel: SENTINEL = '@@AWA_SENTINEL';
@@ -17,7 +18,7 @@ const es5Sentinel: SENTINEL = '@@AWA_SENTINEL';
 // --------------------------------------------------
 // ----            @Public: Iterable             ----
 // --------------------------------------------------
-import {AwaIterable} from '../';
+import {AwaIterable} from '../../';
 const noop = () => (undefined);
 
 ok('Untyped constructor(Iterable<T>, function, function, function?)', () => {
@@ -51,7 +52,7 @@ fails('Input type mismatches annotation', () => {
 // --------------------------------------------------
 // ----        @Private: AwaIterator             ----
 // --------------------------------------------------
-import type {AwaIteration, AwaIterator} from '../';
+import type {AwaIteration, AwaIterator} from '../../';
 
 // fails('Iteration types inherit from Iterable', () => {
 //   let customAcc = new AwaIterable([1], noop, noop, noop);  
