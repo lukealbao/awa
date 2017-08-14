@@ -1,8 +1,8 @@
-// @flow
+// @noflow
 'use strict';
 
 import test from 'ava';
-import {map, filter, into, compose, sequence, eventStream} from '../';
+const {map, filter, into, compose, sequence, eventStream} = require('../');
 import EventEmitter from 'events';
 
 test('Asynchronous map/filter transducer stack', async (t) => {

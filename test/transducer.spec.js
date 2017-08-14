@@ -1,8 +1,8 @@
-// @flow
+// @noflow
 
 'use strict';
 
-import {transducer, Iterable} from '../';
+const {transducer, Iterable} = require('../');
 import test from 'ava';
 
 test.beforeEach(t => {

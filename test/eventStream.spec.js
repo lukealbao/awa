@@ -1,8 +1,8 @@
-// @flow
+// @noflow
 'use strict';
 
 import test from 'ava';
-import {into, eventStream} from '../';
+const {into, eventStream} = require('../');
 import EventEmitter from 'events';
 
 test('Attach a sink to an unfinished event stream', async (t) => {

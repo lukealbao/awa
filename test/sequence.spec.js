@@ -1,7 +1,7 @@
 'use strict';
 
 import {test} from 'ava';
-import {sequence, into} from '../';
+const {sequence, into} = require('../');
 
 test('Accepts an iterable and returns a transducer', async (t) => {
   const arr = [1, 2, 3, 4];

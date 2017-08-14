@@ -1,9 +1,10 @@
-// @flow
+// @noflow
 
 'use strict';
 
 const test = require('ava');
-import {into, sequence} from '../';
+// import {into, sequence} from '../';
+const {into, sequence} = require('../');
 
 test('Returns a Promise resolving its output iterable', t => {
   t.plan(1);

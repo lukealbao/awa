@@ -1,9 +1,9 @@
-// @flow
+// @noflow
 
 'use strict';
 
 const test = require('ava');
-import {forEach, sequence} from '../';
+const {forEach, sequence} = require('../');
 
 test('Returns a Promise resolving the number of entries processed', t => {
   t.plan(1);

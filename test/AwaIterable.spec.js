@@ -1,7 +1,7 @@
 'use strict';
 
 import {test} from 'ava';
-import {Iterable} from '../';
+const {Iterable} = require('../');
 
 test.beforeEach(t => {
   t.context.identity = (acc, val) => val;

@@ -1,9 +1,9 @@
-// @flow
+// @noflow
 
 'use strict';
 
 import test from 'ava';
-import {filter, into, compose} from '../';
+const {filter, into, compose} = require('../');
 
 test('(any -> boolean) -> (sequence) -> sequence', async (t) => {
   const isEven = filter(x => x % 2 === 0);

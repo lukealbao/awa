@@ -1,7 +1,7 @@
 'use strict';
 
 import test from 'ava';
-import {map, into, compose} from '../';
+const {map, into, compose} = require('../');
 
 test('(any -> any) -> (sequence) -> sequence', async (t) => {
   const double = map(x => x * 2);
