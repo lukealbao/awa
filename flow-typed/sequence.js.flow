@@ -1,0 +1,18 @@
+// @flow
+
+declare type LSequence<T> =
+   { type: T, ['isAwaiterable?']: true };
+
+declare function mysequence <T> (
+  source: (LSequence<T> | Iterable<T>)
+): LSequence<T>;
+
+declare function map <In, Out>(
+  fn: FN<In, Out>,
+  seq: void
+): (seq: (Iterable<In> | LSequence<In>)) => LSequence<Out>;
+
+declare function map <In, Out>(
+  fn: FN<In, Out>,
+  seq: (Iterable<In> | LSequence<In>)
+): LSequence<Out>;
