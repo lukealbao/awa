@@ -2,7 +2,7 @@
 'use strict';
 
 import test from 'ava';
-const {map, filter, into, compose, sequence, eventStream} = require('../');
+const {map, filter, into, compose, sequence, bufferedEventStream} = require('../');
 import EventEmitter from 'events';
 
 test('Asynchronous map/filter transducer stack', async (t) => {
@@ -28,8 +28,8 @@ test('Multiple consumers on a single source', async (t) => {
   const evenp = filter(x => x % 2 === 0);
   const oddp = filter(x => x % 2 !== 0);
 
-  const evenstream = evenp(eventStream(source, 'data', 'end'));
-  const oddstream = oddp(eventStream(source, 'data', 'end'));
+  const evenstream = evenp(bufferedEventStream(source, 'data', 'end'));
+  const oddstream = oddp(bufferedEventStream(source, 'data', 'end'));
 
   let evens = into([], evenstream);
   let odds = into([], oddstream);

@@ -2,102 +2,32 @@
 'use strict';
 
 import test from 'ava';
-const {into, eventStream} = require('../');
+const {SENTINEL, into, eventStream, take} = require('../');
 import EventEmitter from 'events';
 
-test('Attach a sink to an unfinished event stream', async (t) => {
-  t.plan(1);
-
+test('Unbuffered event stream', t => {
   const emitter = new EventEmitter();
-  const stream = eventStream(emitter, 'data', 'end');
 
-  const listener = into([], stream);
+  var i = 0;
+  setInterval(() => emitter.emit('data', i++), 0);
+  const stream = take(5, eventStream(emitter, 'data'));
 
-  for (let i = 1; i < 4; i++) {
-    emitter.emit('data', i);
-  }
-
-  emitter.emit('end', 'bye!');
-
-  return listener
-    .then(output => {
-      t.deepEqual(output, [1, 2, 3]);
-    });
+  return into([], stream).then(output => {
+    t.deepEqual(output, [0, 1, 2, 3, 4]);
+  });
 });
 
-test('Attach a sink to a finished but buffered event stream', async (t) => {
-  t.plan(1);
-
+test('Still may produce values for other sinks after sentinel', async (t) => {
   const emitter = new EventEmitter();
-  const stream = eventStream(emitter, 'data', 'end');
+  const stream = eventStream(emitter, 'data');
 
-  for (let i = 1; i < 4; i++) {
-    emitter.emit('data', i);
-  }
+  var i = 1;
+  setInterval(() => emitter.emit('data', i++), 0);
 
-  emitter.emit('end', 'bye!');
+  const five = await into([], take(5, stream));
+  t.deepEqual(five, [1, 2, 3, 4, 5]);
 
-  const output = await into([], stream);
-  t.deepEqual(output, [1, 2, 3]);
-});
-
-test('Create two streams from same emitter', async (t) => {
-  t.plan(2);
-
-  const emitter = new EventEmitter();
-  const stream1 = eventStream(emitter, 'data', 'end');
-  const stream2 = eventStream(emitter, 'data', 'end');
-
-  for (let i = 1; i < 4; i++) {
-    emitter.emit('data', i);
-  }
-
-  emitter.emit('end', 'bye!');
-
-  const output1 = await into([], stream1);
-  const output2 = await into([], stream2);
-  t.deepEqual(output1, [1, 2, 3]);
-  t.deepEqual(output2, [1, 2, 3]);
-});
-
-test('Emitting no events before ending is ok', async (t) => {
-  t.plan(1);
-
-  const emitter = new EventEmitter();
-  const stream = eventStream(emitter, 'data', 'end');
-
-  emitter.emit('end', 'bye!');
-
-  const output = await into([], stream);
-  t.deepEqual(output, []);
-});
-
-test('Emitting a single event before ending is ok', async (t) => {
-  t.plan(1);
-
-  const emitter = new EventEmitter();
-  const stream = eventStream(emitter, 'data', 'end');
-
-  emitter.emit('data', 1);
-  emitter.emit('end', 'bye!');
-
-  const output = await into([], stream);
-  t.deepEqual(output, [1]);
-});
-
-test('Two streams from same emitter receive separate objects!', async (t) => {
-  t.plan(2);
-
-  const emitter = new EventEmitter();
-  const stream1 = eventStream(emitter, 'data', 'end');
-  const stream2 = eventStream(emitter, 'data', 'end');
-
-  emitter.emit('data', {value: 'pass by reference'});
-  emitter.emit('data', {value: 'pass by reference'});
-  emitter.emit('end', 'bye!');
-
-  const output1 = await into([], stream1);
-  const output2 = await into([], stream2);
-  t.not(output1[0], output2[0]);
-  t.deepEqual(output1[0], output2[0]);
+  // Iterator is still available. `take` will open a new one.
+  const restarts = await into([], take(2, stream));
+  t.deepEqual(restarts, [6, 7]);
 });
