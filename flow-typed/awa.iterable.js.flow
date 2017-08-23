@@ -1,0 +1,21 @@
+// @flow
+
+type FN<X, Y> = (domain: X) => Y;
+type Maybe<T> = T | void;
+
+interface AwaIterable<T> {
+  debug(): void;
+  inspect(): string;
+
+  @@iterator(): AwaIterator<T>;
+
+  constructor <In,Out>(
+    source: (Iterable<In> | AwaIterable<In>),
+    transduce: FN<In, Out>,
+    readyp: FN<mixed, boolean>,
+    // TODO: It may be the case that we begin to add accumulators which
+    // do not have the same type as the annotated output type for the
+    // iterable. It may need to be left as mixed.
+    initialAcc?: FN<mixed, Maybe<Out>>
+  ): AwaIterable<Out>
+}

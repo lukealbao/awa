@@ -1,7 +1,6 @@
 // -*- jsx -*-
 // @flow
 
-import {AwaIterable} from '../../';
 function noop (): mixed {}
 
 // $ExpectError: mismatched types
