@@ -1,3 +1,5 @@
+// @noflow
+
 'use strict';
 
 // compose:
@@ -17,7 +19,7 @@ function generateParams (n) {
 }
 
 function paramsList (params) {
-  return `<${params}>`;
+  return `<${String(params)}>`;
 }
 
 function generateArglist (params) {
@@ -28,7 +30,7 @@ function generateArglist (params) {
     args.push(`f${i}: FN<${input},${output}>`);
   }
 
-  return `(${args})`;
+  return `(${String(args)})`;
 }
 
 function arity (n) {
@@ -37,7 +39,7 @@ function arity (n) {
   const In = params[0];
   const Out = params[params.length - 1];
 
-  return `<${params}>${alist} => FN<${In}, ${Out}>`;
+  return `<${String(params)}>${alist} => FN<${In}, ${Out}>`;
 }
 
 
