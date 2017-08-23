@@ -41,7 +41,8 @@
     "flow-bin": "^0.52.0",
     "flow-coverage-report": "^0.3.0",
     "nyc": "^11.1.0",
-    "prettier": "^1.5.3"
+    "prettier": "^1.5.3",
+    "split2": "^2.1.1"
   },
   "dependencies": {
     "@ava/babel-preset-stage-4": "^1.1.0",
