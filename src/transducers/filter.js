@@ -1,20 +1,53 @@
-// @flow
-
 'use strict';
 
-const transducer = require('./transducer');
+const debug = require('util').debuglog('awa/filter');
+const {
+  isPromise,
+  isAwaIterable
+} = require('../lib/predicates');
 
-function filtererToReducer (fn) {
-  return function (acc, val) {
-    // Step function just replaces accumulator with mapping of value.
-    // This causes readyp to return true after every value.
-    if (typeof fn === 'function' && fn(val)) {
-      acc = val;
+function filter (fn, seq) {
+  if (seq === undefined) {
+    return function (seq) {
+      return filtering(fn, seq);
+    };
+  } else {
+    return filtering(fn, seq);
+  }
+}
+
+function filtering (fn, seq) {
+  function* iterator () {
+    let done = false;
+    const source = seq[Symbol.iterator]();
+
+    while (!done) {
+      let step = source.next();
+
+      while (isPromise(step.value)) {
+        step.value = yield step.value;
+
+        if (isAwaIterable(seq)) {
+          step = source.next(step.value);
+        }
+      }
+
+      if (step.done) {
+        done = true;
+        return;
+      }
+
+      if (fn(step.value)) {
+        yield step.value;
+      }
     }
+  }
 
-    return acc;
+  return {
+    IS_AWAITERABLE: true,
+    [Symbol.for('is_awaiterable')]: true,
+    [Symbol.iterator]: iterator
   };
 }
 
-const filter = transducer(filtererToReducer);
 module.exports = filter;
