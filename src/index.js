@@ -16,7 +16,7 @@ const map = require('./transducers/map.js');
 const filter = require('./transducers/filter.js');
 const sequence = require('./transducers/sequence.js');
 const flatten = require('./transducers/flatten.js');
-const split = require('./transducers/split.js');
+const split = require('./transducers/new-split.js');
 const eventStream = require('./transducers/event-stream.js');
 const bufferedEventStream = require('./transducers/buffered-event-stream.js');
 

@@ -30,23 +30,20 @@ function* split (fn, sequence) {
   let buffer = [];
 
   let done = false;
-  let bufferedValues = 0;  
-  let buffering = tstart('Flush buffer');
+  let head = 0;
   
   while (!done) {
     if (buffer.length > 1) { // Case 1
-      if (bufferedValues < 1) {        
-        buffering = tstart('Flush buffer');
+      if (head >= buffer.length) {
+        //debug(`stopping flush with head @ ${head}, buffer @ ${buffer.length}`);
+        buffer = [buffer[buffer.length-1]];
+        head = 0;
+        continue;
       }
-      const head = buffer.shift();
+      yield buffer[head++];
       //debug(`yields buffered value: ${inspect(head)}`);
-      yield head;
-      bufferedValues += 1;
       continue;
     }
-    tlog(buffering);
-    debug(`Yielded ${bufferedValues} buffered values`);
-    bufferedValues = 0;
 
     let step = iterator.next();
     let current = null;
@@ -62,7 +59,7 @@ function* split (fn, sequence) {
     }
 
     if (buffer.length === 0) {
-      if (step.done) return;
+      if (step.done) continue;//return;
       while (isPromise(step.value)) {
         const p2 = tstart('Promise2');
         step.value = yield step.value;
